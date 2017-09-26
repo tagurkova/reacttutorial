@@ -58,6 +58,14 @@ let News = React.createClass({
     propTypes: {
         data: React.PropTypes.array.isRequired
     },
+    getInitialState: function () {
+        return {
+            counter: 0
+        }
+    },
+    increaseCounter: function() {
+        this.setState({counter: ++this.state.counter});
+    },
     render: function () {
         let data = this.props.data;
         let newsTemplate;
@@ -76,7 +84,7 @@ let News = React.createClass({
         return (
             <div className="news">
                 {newsTemplate}
-                <strong className={'news__count' + (data.length > 0 ? '' : 'none')}>Всего
+                <strong onClick={this.increaseCounter} className={'news__count' + (data.length > 0 ? '' : 'none')}>Всего
                     новостей: {data.length}</strong>
             </div>
         );
