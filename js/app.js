@@ -26,20 +26,24 @@ let Comments = React.createClass({
 let News = React.createClass({
     render: function() {
         let data = this.props.data;
-        let newsTemplate = data.map(function(item, index) {
-            return (
-                <div key={index}>
-                    <p className="news__author">{item.author}:</p>
-                    <p className="news__text">{item.text}</p>
-                </div>
-            )
-        });
-
-        console.log(newsTemplate);
+        let newsTemplate;
+        if (data.length > 0) {
+            newsTemplate = data.map(function(item, index) {
+                return (
+                    <div key={index}>
+                        <p className="news__author">{item.author}:</p>
+                        <p className="news__text">{item.text}</p>
+                    </div>
+                )
+            })
+        } else {
+            newsTemplate = <p>К сожалению новостей нет</p>
+        }
 
         return (
             <div className="news">
                 {newsTemplate}
+                <strong className={data.length > 0 ? '':'none'}>Всего новостей: {data.length}</strong>
             </div>
         );
     }
