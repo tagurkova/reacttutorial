@@ -44,10 +44,10 @@ let Article = React.createClass({
                 <p className="news__text">{text}</p>
                 <a href="#"
                    onClick={this.readmoreClick}
-                   className={'news__readmore ' + (visible ? 'none': '')}>
+                   className={'news__readmore ' + (visible ? 'none' : '')}>
                     Подробнее
                 </a>
-                <p className={'news__big-text ' + (visible ? '': 'none')}>{bigText}</p>
+                <p className={'news__big-text ' + (visible ? '' : 'none')}>{bigText}</p>
 
             </div>
         );
@@ -62,9 +62,6 @@ let News = React.createClass({
         return {
             counter: 0
         }
-    },
-    increaseCounter: function() {
-        this.setState({counter: ++this.state.counter});
     },
     render: function () {
         let data = this.props.data;
@@ -84,18 +81,40 @@ let News = React.createClass({
         return (
             <div className="news">
                 {newsTemplate}
-                <strong onClick={this.increaseCounter} className={'news__count' + (data.length > 0 ? '' : 'none')}>Всего
+                <strong className={'news__count' + (data.length > 0 ? '' : 'none')}>Всего
                     новостей: {data.length}</strong>
             </div>
         );
     }
 });
 
+let TestInput = React.createClass({
+    onBtnClickHandler: function() {
+        console.log(this.refs);
+        alert(ReactDOM.findDOMNode(this.refs.myTestInput).value);
+    },
+    render: function () {
+        return (
+            <div>
+                <input
+                    className='test-input'
+                    defaultValue=''
+                    placeholder='введите значение'
+                    ref='myTestInput'
+                />
+                <button onClick={this.onBtnClickHandler} ref='alert_button'>Показать alert</button>
+            </div>
+        );
+    }
+});
+
+
 let App = React.createClass({
     render: function () {
         return (
             <div className="app">
                 <h3>Новости</h3>
+                <TestInput />
                 <News data={my_news}/> {/*добавили свойство data */}
             </div>
         );
