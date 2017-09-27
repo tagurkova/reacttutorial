@@ -54,6 +54,65 @@ let Article = React.createClass({
     }
 });
 
+let Add = React.createClass({
+    getInitialState: function () { //устанавливаем начальное состояние (state)
+        return {
+            agreeNotChecked: true,
+            authorIsEmpty: true,
+            textIsEmpty: true
+        };
+    },
+    componentDidMount: function () {
+        ReactDOM.findDOMNode(this.refs.author).focus();
+    },
+    onBtnClickHandler: function (e) {
+        e.preventDefault();
+        let author = ReactDOM.findDOMNode(this.refs.author).value;
+        let text = ReactDOM.findDOMNode(this.refs.text).value;
+        alert(author + '\n' + text);
+    },
+    onCheckRuleClick: function () {
+        this.setState({agreeNotChecked: !this.state.agreeNotChecked}); //устанавливаем значение в state
+    },
+    onFieldChange: function(fieldName, e) {
+        this.setState({[fieldName]: !(e.target.value.trim().length > 0)});
+    },
+    render: function () {
+        return (
+            <form className='add cf'>
+                <input
+                    type='text'
+                    className='add__author'
+                    defaultValue=''
+                    placeholder='Ваше имя'
+                    ref='author'
+                    onChange={this.onFieldChange.bind(this, 'authorIsEmpty')}
+                />
+                <textarea
+                    className='add__text'
+                    defaultValue=''
+                    placeholder='Текст новости'
+                    ref='text'
+                    onChange={this.onFieldChange.bind(this, 'textIsEmpty')}
+                />
+                <label className='add__checkrule'>
+                    <input type='checkbox' ref='checkrule' onChange={this.onCheckRuleClick}/>Я согласен с правилами
+                </label>
+                {/* берем значение для disabled атрибута из state */}
+                <button
+                    className='add__btn'
+                    onClick={this.onBtnClickHandler}
+                    ref='alert_button'
+                    disabled={this.state.agreeNotChecked || this.state.authorIsEmpty || this.state.textIsEmpty}
+                >
+                    Показать alert
+                </button>
+            </form>
+        );
+    }
+});
+
+
 let News = React.createClass({
     propTypes: {
         data: React.PropTypes.array.isRequired
@@ -88,36 +147,13 @@ let News = React.createClass({
     }
 });
 
-let TestInput = React.createClass({
-    componentDidMount: function() { //ставим фокус в input
-        ReactDOM.findDOMNode(this.refs.myTestInput).focus();
-    },
-    onBtnClickHandler: function() {
-        console.log(this.refs);
-        alert(ReactDOM.findDOMNode(this.refs.myTestInput).value);
-    },
-    render: function () {
-        return (
-            <div>
-                <input
-                    className='test-input'
-                    defaultValue=''
-                    placeholder='введите значение'
-                    ref='myTestInput'
-                />
-                <button onClick={this.onBtnClickHandler} ref='alert_button'>Показать alert</button>
-            </div>
-        );
-    }
-});
-
 
 let App = React.createClass({
     render: function () {
         return (
             <div className="app">
+                <Add />
                 <h3>Новости</h3>
-                <TestInput />
                 <News data={my_news}/> {/*добавили свойство data */}
             </div>
         );
