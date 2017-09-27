@@ -16,6 +16,8 @@ let my_news = [
     }
 ];
 
+window.ee = new EventEmitter();
+
 let Article = React.createClass({
     propTypes: {
         data: React.PropTypes.shape({
@@ -67,9 +69,21 @@ let Add = React.createClass({
     },
     onBtnClickHandler: function (e) {
         e.preventDefault();
+
+        let textEl = ReactDOM.findDOMNode(this.refs.text);
+
         let author = ReactDOM.findDOMNode(this.refs.author).value;
         let text = ReactDOM.findDOMNode(this.refs.text).value;
-        alert(author + '\n' + text);
+
+        let item = [{
+            author: author,
+            text: text,
+            bigText: '...'
+        }];
+        window.ee.emit('News.add', item);
+
+        textEl.value = '';
+        this.setState({textIsEmpty: true});
     },
     onCheckRuleClick: function () {
         this.setState({agreeNotChecked: !this.state.agreeNotChecked}); //устанавливаем значение в state
@@ -105,7 +119,7 @@ let Add = React.createClass({
                     ref='alert_button'
                     disabled={this.state.agreeNotChecked || this.state.authorIsEmpty || this.state.textIsEmpty}
                 >
-                    Показать alert
+                    Добавить новость
                 </button>
             </form>
         );
@@ -149,12 +163,28 @@ let News = React.createClass({
 
 
 let App = React.createClass({
+    getInitialState: function() {
+        return {
+            news: my_news
+        };
+    },
+    componentDidMount: function() {
+        let self = this;
+        window.ee.addListener('News.add', function(item) {
+            let nextNews = item.concat(self.state.news);
+            self.setState({news: nextNews});
+        });
+    },
+    componentWillUnmount: function() {
+        window.ee.removeListener('News.add');
+
+    },
     render: function () {
         return (
             <div className="app">
                 <Add />
                 <h3>Новости</h3>
-                <News data={my_news}/> {/*добавили свойство data */}
+                <News data={this.state.news} /> {/*добавили свойство data */}
             </div>
         );
     }
