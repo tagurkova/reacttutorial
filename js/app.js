@@ -31,6 +31,7 @@ let Article = React.createClass({
             visible: false
         }
     },
+
     readmoreClick: function (e) {
         e.preventDefault();
         this.setState({visible: true});
